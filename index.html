@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Captação Japaratinga — Primeiras Infâncias</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #161616;
+      --surface2: #1e1e1e;
+      --border: #2a2a2a;
+      --text: #e8e8e8;
+      --text2: #999;
+      --accent: #c8a2ff;
+      --green: #6ecf8e;
+      --yellow: #f0c96b;
+      --red: #e87c7c;
+      --blue: #7cb8e8;
+      --orange: #e8a86b;
+      --teal: #6bc8c0;
+      --pink: #d48cb8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .header-sub {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 2px;
+    }
+
+    .progress-bar-container {
+      margin-top: 12px;
+      background: var(--surface2);
+      border-radius: 6px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--blue));
+      border-radius: 6px;
+      transition: width 0.4s ease;
+    }
+
+    .progress-text {
+      font-size: 11px;
+      color: var(--text2);
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .sync-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--text2);
+      margin-top: 4px;
+    }
+
+    .sync-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .sync-dot.offline { background: var(--yellow); }
+    .sync-dot.error { background: var(--red); }
+
+    .tabs {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 12px 20px;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab {
+      flex-shrink: 0;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    .tab .tab-count {
+      display: inline-block;
+      margin-left: 4px;
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .content {
+      padding: 16px 20px 100px;
+    }
+
+    .module-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .module-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .module-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+
+    .module-progress {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text2);
+      font-weight: 500;
+    }
+
+    .scene-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+
+    .scene-card.checked {
+      opacity: 0.5;
+      border-color: var(--green);
+    }
+
+    .scene-card.checked .scene-title {
+      text-decoration: line-through;
+      color: var(--text2);
+    }
+
+    .scene-main {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .checkbox {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+      transition: all 0.2s;
+    }
+
+    .scene-card.checked .checkbox {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .checkbox svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .scene-card.checked .checkbox svg { opacity: 1; }
+
+    .scene-info { flex: 1; min-width: 0; }
+
+    .scene-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      letter-spacing: -0.2px;
+    }
+
+    .scene-desc {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.45;
+    }
+
+    .scene-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 0 16px 12px 50px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      background: var(--surface2);
+      color: var(--text2);
+    }
+
+    .scene-notes {
+      padding: 0 16px 12px 50px;
+    }
+
+    .scene-notes textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 8px 10px;
+      resize: vertical;
+      min-height: 36px;
+    }
+
+    .scene-notes textarea::placeholder { color: #555; }
+    .scene-notes textarea:focus { outline: none; border-color: var(--accent); }
+
+    .section-divider {
+      text-align: center;
+      padding: 20px 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .time-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .time-card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .time-card .time-range {
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .time-card p {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.45;
+    }
+
+    .orientacoes-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .orientacoes-card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .orientacoes-card p {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    .firebase-setup {
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .firebase-setup h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .firebase-setup p {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .firebase-setup code {
+      background: var(--surface2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    @media (min-width: 600px) {
+      .time-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Captacao Japaratinga</h1>
+  <div class="header-sub">Primeiras Infancias Brasileiras — Roteiro de captacao para Lucas</div>
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="globalProgress" style="width: 0%"></div>
+  </div>
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <div class="sync-status">
+      <span class="sync-dot" id="syncDot"></span>
+      <span id="syncText">Conectando...</span>
+    </div>
+    <div class="progress-text" id="globalProgressText">0/0 cenas</div>
+  </div>
+</div>
+
+<div class="tabs" id="tabs"></div>
+<div class="content" id="content"></div>
+
+<script type="module">
+  // ====================================
+  // FIREBASE CONFIG — PREENCHA AQUI
+  // ====================================
+  const FIREBASE_CONFIG = {
+    apiKey: "",
+    authDomain: "",
+    databaseURL: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: ""
+  };
+
+  // ====================================
+  // DATA
+  // ====================================
+  const DATA = {
+    modules: [
+      {
+        id: "hall",
+        name: "Hall — Video 3min",
+        fullName: "H1.02 Projecao Percepcao",
+        color: "#f0c96b",
+        scenes: [
+          { id: "hall_1", title: "Areia macro", desc: "Graos de areia em plano muito proximo. Mao de crianca tocando, cavando, sentindo. Areia escorrendo entre os dedos. Macro da textura seca vs. molhada.", tags: ["macro", "tato", "materia"] },
+          { id: "hall_2", title: "Agua nos pes", desc: "Pes descalcos (crianca e adulto) na beira da agua. Ondas chegando, cobrindo, recuando. Camera no nivel do chao. Espuma, bolhas, reflexos na areia molhada.", tags: ["camera-baixa", "tato", "escala"] },
+          { id: "hall_3", title: "Luz e sombra", desc: "Sombras de palmeiras na areia. Luz filtrada pela vegetacao. Contraluz no amanhecer/entardecer. Silhuetas. Reflexos na agua. Brilho e penumbra.", tags: ["luz", "golden-hour", "poetico"] },
+          { id: "hall_4", title: "Paisagem sonora (AUDIO)", desc: "Gravar SO AUDIO: ondas, vento, passaros, passos na areia umida, agua, conchas, vozes de criancas ao longe, silencio do mangue ao entardecer.", tags: ["som", "ambiente", "mangue"] },
+          { id: "hall_5", title: "Mundo de baixo", desc: "Camera na altura do chao. Coqueiros vistos de baixo (escala gigante). Pernas de adultos passando. Vegetacao vista pela perspectiva de uma crianca de 2 anos.", tags: ["camera-baixa", "perspectiva", "escala"] },
+          { id: "hall_6", title: "Seguir pistas", desc: "Pegadas na areia (adulto e crianca lado a lado). Rastro de caranguejo. Conchas em sequencia. Algo que aparece e some com a onda.", tags: ["detalhe", "rastro", "onda"] },
+          { id: "hall_7", title: "Materia em transformacao", desc: "Areia molhada virando construcao. Agua mudando cor com reflexo. Mare subindo/descendo (time-lapse). Poca que seca. Espuma que desaparece.", tags: ["materia", "time-lapse", "agua"] }
+        ]
+      },
+      {
+        id: "microgestos",
+        name: "Sala 1 — Microgestos",
+        fullName: "S1.03 Extraordinario do Ordinario",
+        color: "#6ecf8e",
+        scenes: [
+          { id: "micro_1", title: "Pinca e pegar", desc: "Mao de crianca pegando conchinhas, pedrinhas, galhos pequenos na praia. Close dos dedos fazendo pinca. Transferir de uma mao para outra.", tags: ["macro", "motricidade", "maos"] },
+          { id: "micro_2", title: "Desenho na areia", desc: "Dedo ou graveto tracando na areia molhada. Traco, pressao e ritmo. A onda apaga e a crianca refaz. Repeticao como estrutura.", tags: ["repeticao", "traco", "gesto"] },
+          { id: "micro_3", title: "Cavar e construir", desc: "Maos cavando areia. Empilhar areia molhada. Tentar fazer uma torre que desmorona (frustracao). Recomecar. Variacao do gesto cada vez.", tags: ["tentativa", "erro", "maos"] },
+          { id: "micro_4", title: "Rasgar e transformar", desc: "Folhas, galhos, algas — maos que rasgam, dobram, amassam material natural. A materia responde ao gesto. Close nas maos.", tags: ["materia", "macro", "transformacao"] },
+          { id: "micro_5", title: "Equilibrio", desc: "Crianca caminhando em superficie irregular (pedras, areia fofa). Corpo que desequilibra e se recupera. Mao que busca apoio. Gravidade como descoberta.", tags: ["corpo", "gravidade", "equilibrio"] }
+        ]
+      },
+      {
+        id: "cuidar",
+        name: "Sala 2 — Historias do Cuidar",
+        fullName: "S2.05 Historias do Cuidar",
+        color: "#c8a2ff",
+        scenes: [
+          { id: "cuid_1", title: "Colo na praia", desc: "Adulto com crianca no colo a beira-mar. O corpo grande que protege do sol, do vento. Presenca sem pressa. Camera de longe (observacional).", tags: ["vinculo", "presenca", "observacional"] },
+          { id: "cuid_2", title: "Banho de mar", desc: "Adulto segurando crianca na agua. Mao grande na mao pequena. Confianca. A onda vem — medo e riso. Acolhimento. Relacao de suporte no corpo.", tags: ["vinculo", "confianca", "corpo"] },
+          { id: "cuid_3", title: "Cuidador local", desc: "Se possivel: pescador/a com neto/a. Avo na rede com crianca. Cuidado em contexto nordestino real. Multiplas parentalidades. Diversidade de quem cuida.", tags: ["diversidade", "territorio", "intergeracional"] },
+          { id: "cuid_4", title: "Rede de apoio", desc: "Varias pessoas cuidando: crianca que passa de um colo a outro. Vizinha que olha. Irmao mais velho que brinca. Cuidado como tarefa compartilhada.", tags: ["rede", "comunidade", "coletivo"] }
+        ]
+      },
+      {
+        id: "territorios",
+        name: "Sala 3 — Territorios",
+        fullName: "Infancias Plurais",
+        color: "#6bc8c0",
+        scenes: [
+          { id: "terr_1", title: "Territorio litoraneo", desc: "Paisagem ampla: praia, coqueiros, mangue, rio. O lugar onde se cresce. Plano geral que mostra o territorio como contexto do desenvolvimento.", tags: ["paisagem", "plano-geral", "territorio"] },
+          { id: "terr_2", title: "Infancia nordestina", desc: "Criancas brincando em contexto real do litoral. Rua de terra, quintal, varal, rede, calcada. O cotidiano local como territorio da infancia.", tags: ["cotidiano", "nordeste", "real"] },
+          { id: "terr_3", title: "Mar como quintal", desc: "Criancas que conhecem o mar desde sempre. Nadar, pegar conchas, correr da onda. O litoral como extensao da casa. Naturalidade, nao turismo.", tags: ["mar", "naturalidade", "brincadeira"] },
+          { id: "terr_4", title: "Mangue", desc: "Se houver acesso: mangue como territorio infantil. Lama, raizes, caranguejos. Um ecossistema que a crianca conhece pelo corpo e pela exploracao.", tags: ["mangue", "natureza", "exploracao"] },
+          { id: "terr_5", title: "Contraste", desc: "Mostrar o que muda entre territorios: a praia vs. a rua, o quintal vs. o mangue. Condicoes que diferem. Nem toda infancia tem o mesmo chao.", tags: ["contraste", "condicoes", "desigualdade"] }
+        ]
+      },
+      {
+        id: "brincar",
+        name: "Sala 4 — Brincar",
+        fullName: "Expressoes: Brincar e Fazer Mundo",
+        color: "#e8a86b",
+        scenes: [
+          { id: "brin_1", title: "Brincadeira livre", desc: "Criancas inventando jogos na praia. Sem brinquedos industriais — pau, pedra, conchas, balde. A brincadeira como forma de fazer mundo.", tags: ["livre", "criatividade", "invencao"] },
+          { id: "brin_2", title: "Brincar com agua", desc: "Poca, balde, onda, rio. A agua como materia de brincar infinita. Encher, despejar, salpicar, correr. Repeticao e variacao. Alegria e frustracao.", tags: ["agua", "repeticao", "emocoes"] },
+          { id: "brin_3", title: "Brincar com areia", desc: "Construir, destruir, moldar. Castelo, buraco, montanha. A areia como materia que responde ao gesto. Crianca como artista e cientista da materia.", tags: ["areia", "construcao", "materia"] },
+          { id: "brin_4", title: "Brincar junto", desc: "Criancas brincando juntas. Negociacao, imitacao, disputa, colaboracao. O brincar como exercicio de relacao e linguagem. Conflito e resolucao.", tags: ["social", "relacao", "linguagem"] }
+        ]
+      },
+      {
+        id: "pais",
+        name: "Sala 5 — Fazendo Pais",
+        fullName: "Crianca Cidada no Presente",
+        color: "#7cb8e8",
+        scenes: [
+          { id: "pais_1", title: "Espaco publico", desc: "Crianca no espaco publico da cidade/vila: praca, calcada, mercado, feira. A crianca como presenca no territorio coletivo. Como o lugar acolhe ou nao.", tags: ["cidade", "publico", "presenca"] },
+          { id: "pais_2", title: "Acesso e condicoes", desc: "O que existe (ou falta) para a infancia no local: parquinho, sombra, escola, agua limpa, calcada. Mostrar sem idealizar. O chao real da infancia.", tags: ["condicoes", "infraestrutura", "real"] },
+          { id: "pais_3", title: "Horizonte", desc: "Crianca olhando o mar. Horizonte aberto, futuro. Imagem poetica de abertura e possibilidade. Ultima imagem possivel do percurso da exposicao.", tags: ["poetico", "futuro", "horizonte"] }
+        ]
+      },
+      {
+        id: "coringa",
+        name: "Imagens Coringa",
+        fullName: "Servem a Varios Modulos",
+        color: "#999",
+        scenes: [
+          { id: "cor_1", title: "Texturas naturais macro", desc: "Areia seca/molhada, casca de coqueiro, madeira da jangada, rede de pesca, conchas, pedras, algas, coral, folhas de mangue.", tags: ["macro", "textura", "natureza"] },
+          { id: "cor_2", title: "Transicoes", desc: "Imagens abstratas: agua em movimento, luz na superficie, reflexos, ondas em camera lenta, nuvens, espuma. Para transicao entre modulos.", tags: ["abstrato", "transicao", "agua"] },
+          { id: "cor_3", title: "Desfoque poetico", desc: "Imagens propositalmente desfocadas: luzes do entardecer, silhuetas, bokeh natural da vegetacao, reflexos borrados na agua.", tags: ["desfoque", "bokeh", "poetico"] },
+          { id: "cor_4", title: "Time-lapse", desc: "Mare subindo/descendo. Sombra de coqueiro se movendo na areia. Nuvens. Nascer/por do sol. Luz mudando ao longo do dia.", tags: ["time-lapse", "luz", "tempo"] },
+          { id: "cor_5", title: "Slow motion", desc: "Agua espirrando. Areia caindo. Crianca correndo. Onda quebrando. Gota caindo. Pe tocando poca. 120fps minimo se possivel.", tags: ["slow-motion", "agua", "movimento"] }
+        ]
+      }
+    ],
+    horarios: [
+      { nome: "Amanhecer", range: "5h — 7h", desc: "Luz dourada rasante. Sombras longas na areia. Silhuetas. Contraluz. Paisagem sonora silenciosa.", ideal: "Luz e sombra, Desfoque, Transicoes, Time-lapse" },
+      { nome: "Manha", range: "7h — 10h", desc: "Luz clara, boa para cor. Criancas brincando. Pescadores saindo. Momento ativo.", ideal: "Brincadeira livre, Microgestos, Territorios, Historias do cuidar" },
+      { nome: "Meio-dia", range: "10h — 14h", desc: "Luz dura, sombras curtas. Contraste forte. Texturas com luz direta.", ideal: "Macro texturas, Areia e agua em close, Slow motion" },
+      { nome: "Tarde", range: "14h — 17h", desc: "Luz suavizando. Criancas voltando a brincar. Mare mudando.", ideal: "Cenas com criancas, Brincar com agua, Cenas de cuidado" },
+      { nome: "Entardecer", range: "17h — 18h30", desc: "Golden hour. A melhor luz. Reflexos na agua. Silhuetas no horizonte.", ideal: "Horizonte (Sala 5), Desfoque poetico, Transicoes, Slow motion" }
+    ],
+    orientacoes: [
+      { titulo: "Equipamento", desc: "Camera com boa resolucao (minimo 4K). Lentes macro se possivel. Tripe baixo. Estabilizador/gimbal. Gravador de audio externo." },
+      { titulo: "Camera baixa", desc: "Sempre que possivel filmar na altura da crianca (0-6 anos) ou ainda mais baixo, no nivel do chao." },
+      { titulo: "Som", desc: "Gravar paisagens sonoras separadamente: ondas, vento, passaros, passos na areia, agua, vozes ao longe, silencio do mangue." },
+      { titulo: "Ritmo", desc: "Filmar LONGO. Cada tomada com pelo menos 30-60s. Nao cortar cedo. O ritmo e contemplativo. Captar repeticoes, pausas, micromomentos." },
+      { titulo: "Diversidade", desc: "Se houver criancas: variar idade (bebes a 6 anos), genero, etnia. Relacoes: crianca-adulto, crianca-crianca, crianca-ambiente." },
+      { titulo: "Evitar", desc: "Nao dirigir cenas. Nao pedir que criancas finjam ou performem. Captar o espontaneo. Nao idealizar — incluir frustracao, erro, esforco." }
+    ]
+  };
+
+  // ====================================
+  // STATE
+  // ====================================
+  let state = {};
+  let notes = {};
+  let currentTab = "all";
+  let db = null;
+  let firebaseReady = false;
+
+  // ====================================
+  // FIREBASE INIT
+  // ====================================
+  async function initFirebase() {
+    if (!FIREBASE_CONFIG.apiKey) {
+      updateSyncStatus("offline", "Local (configure Firebase)");
+      return;
+    }
+    try {
+      const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js");
+      const { getDatabase, ref, onValue, set } = await import("https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js");
+      const app = initializeApp(FIREBASE_CONFIG);
+      db = getDatabase(app);
+      firebaseReady = true;
+
+      const stateRef = ref(db, "captacao/checks");
+      onValue(stateRef, (snapshot) => {
+        const val = snapshot.val();
+        if (val) { state = val; render(); }
+      });
+
+      const notesRef = ref(db, "captacao/notes");
+      onValue(notesRef, (snapshot) => {
+        const val = snapshot.val();
+        if (val) { notes = val; render(); }
+      });
+
+      updateSyncStatus("online", "Firebase conectado");
+    } catch (e) {
+      console.error("Firebase error:", e);
+      updateSyncStatus("error", "Erro Firebase");
+    }
+  }
+
+  function saveState() {
+    localStorage.setItem("captacao_state", JSON.stringify(state));
+    localStorage.setItem("captacao_notes", JSON.stringify(notes));
+    if (firebaseReady && db) {
+      import("https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js").then(({ ref, set }) => {
+        set(ref(db, "captacao/checks"), state);
+        set(ref(db, "captacao/notes"), notes);
+      });
+    }
+  }
+
+  function loadLocal() {
+    try {
+      const s = localStorage.getItem("captacao_state");
+      const n = localStorage.getItem("captacao_notes");
+      if (s) state = JSON.parse(s);
+      if (n) notes = JSON.parse(n);
+    } catch(e) {}
+  }
+
+  function updateSyncStatus(status, text) {
+    const dot = document.getElementById("syncDot");
+    const txt = document.getElementById("syncText");
+    dot.className = "sync-dot " + (status === "online" ? "" : status);
+    txt.textContent = text;
+  }
+
+  // ====================================
+  // RENDERING
+  // ====================================
+  function getSceneCount(moduleId) {
+    const mod = DATA.modules.find(m => m.id === moduleId);
+    if (!mod) return { total: 0, done: 0 };
+    const total = mod.scenes.length;
+    const done = mod.scenes.filter(s => state[s.id]).length;
+    return { total, done };
+  }
+
+  function getAllCount() {
+    let total = 0, done = 0;
+    DATA.modules.forEach(m => {
+      m.scenes.forEach(s => {
+        total++;
+        if (state[s.id]) done++;
+      });
+    });
+    return { total, done };
+  }
+
+  function renderTabs() {
+    const container = document.getElementById("tabs");
+    const all = getAllCount();
+    let html = `<div class="tab ${currentTab === 'all' ? 'active' : ''}" data-tab="all">Todas <span class="tab-count">${all.done}/${all.total}</span></div>`;
+
+    DATA.modules.forEach(m => {
+      const c = getSceneCount(m.id);
+      html += `<div class="tab ${currentTab === m.id ? 'active' : ''}" data-tab="${m.id}" style="${currentTab === m.id ? `background:${m.color};border-color:${m.color}` : ''}">${m.name.split(' — ')[0]} <span class="tab-count">${c.done}/${c.total}</span></div>`;
+    });
+
+    html += `<div class="tab ${currentTab === 'horarios' ? 'active' : ''}" data-tab="horarios">Horarios</div>`;
+    html += `<div class="tab ${currentTab === 'orientacoes' ? 'active' : ''}" data-tab="orientacoes">Orientacoes</div>`;
+
+    container.innerHTML = html;
+    container.querySelectorAll(".tab").forEach(t => {
+      t.addEventListener("click", () => {
+        currentTab = t.dataset.tab;
+        render();
+      });
+    });
+  }
+
+  function renderContent() {
+    const container = document.getElementById("content");
+
+    if (currentTab === "horarios") {
+      container.innerHTML = `
+        <div class="section-divider">Quando captar o que</div>
+        <div class="time-grid">${DATA.horarios.map(h => `
+          <div class="time-card">
+            <h3>${h.nome}</h3>
+            <div class="time-range">${h.range}</div>
+            <p>${h.desc}</p>
+            <p style="margin-top:8px;color:var(--accent);font-size:12px"><strong>Ideal para:</strong> ${h.ideal}</p>
+          </div>
+        `).join("")}</div>`;
+      return;
+    }
+
+    if (currentTab === "orientacoes") {
+      container.innerHTML = `
+        <div class="section-divider">Orientacoes gerais de captacao</div>
+        ${!FIREBASE_CONFIG.apiKey ? `<div class="firebase-setup">
+          <h3>Firebase</h3>
+          <p>Para sincronizar em tempo real, edite o arquivo <code>index.html</code> e preencha o objeto <code>FIREBASE_CONFIG</code> com as credenciais do seu projeto Firebase Realtime Database.</p>
+          <p>Sem Firebase, os checks ficam salvos localmente no navegador.</p>
+        </div>` : ''}
+        ${DATA.orientacoes.map(o => `
+          <div class="orientacoes-card">
+            <h3>${o.titulo}</h3>
+            <p>${o.desc}</p>
+          </div>
+        `).join("")}`;
+      return;
+    }
+
+    const modules = currentTab === "all" ? DATA.modules : DATA.modules.filter(m => m.id === currentTab);
+    let html = "";
+
+    modules.forEach(mod => {
+      const c = getSceneCount(mod.id);
+      html += `
+        <div class="module-header">
+          <div class="module-dot" style="background:${mod.color}"></div>
+          <div>
+            <div class="module-title">${mod.fullName}</div>
+          </div>
+          <div class="module-progress">${c.done}/${c.total}</div>
+        </div>`;
+
+      mod.scenes.forEach(scene => {
+        const checked = state[scene.id] ? "checked" : "";
+        const noteVal = notes[scene.id] || "";
+        html += `
+          <div class="scene-card ${checked}" data-scene="${scene.id}">
+            <div class="scene-main">
+              <div class="checkbox">
+                <svg viewBox="0 0 14 14" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7.5L5.5 10.5L11.5 3.5"/></svg>
+              </div>
+              <div class="scene-info">
+                <div class="scene-title">${scene.title}</div>
+                <div class="scene-desc">${scene.desc}</div>
+              </div>
+            </div>
+            <div class="scene-tags">${scene.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>
+            <div class="scene-notes">
+              <textarea placeholder="Notas do Lucas..." data-note="${scene.id}" rows="1">${noteVal}</textarea>
+            </div>
+          </div>`;
+      });
+    });
+
+    container.innerHTML = html;
+
+    container.querySelectorAll(".scene-main").forEach(el => {
+      el.addEventListener("click", () => {
+        const card = el.closest(".scene-card");
+        const id = card.dataset.scene;
+        state[id] = !state[id];
+        saveState();
+        render();
+      });
+    });
+
+    container.querySelectorAll("textarea[data-note]").forEach(el => {
+      el.addEventListener("input", (e) => {
+        notes[e.target.dataset.note] = e.target.value;
+        saveState();
+      });
+    });
+  }
+
+  function updateGlobalProgress() {
+    const { total, done } = getAllCount();
+    const pct = total > 0 ? (done / total) * 100 : 0;
+    document.getElementById("globalProgress").style.width = pct + "%";
+    document.getElementById("globalProgressText").textContent = `${done}/${total} cenas`;
+  }
+
+  function render() {
+    renderTabs();
+    renderContent();
+    updateGlobalProgress();
+  }
+
+  // ====================================
+  // INIT
+  // ====================================
+  loadLocal();
+  render();
+  initFirebase();
+</script>
+</body>
+</html>
